@@ -1,0 +1,486 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>:: Desenvolvimento Web & Mobile ::</title>
+<link href="https://fonts.googleapis.com/css?family=Great+Vibes|Yeseva+One" rel="stylesheet">
+<style>
+span.status-upload {
+    color: blue;
+    font-size:13px;
+    /*border:1px solid #000;*/
+    display: block;
+}
+
+span.preview-images {
+    display: block;
+    max-width: 100px;
+    max-height: 100px;        
+}
+
+#forms-slide input[type="text"] {
+    border: 1px solid blue;
+    width: 300px;
+}
+
+#slide {
+    background-color: #cdcdcd;
+    border: 1px solid #000;
+}
+
+#template-form-scene {
+    display: none;
+}
+
+#example {
+    font-size: 28px;
+}
+
+#container-frase-slide {
+    
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  width: 900px; 
+  color: blue;
+  text-align: center;
+  top: 50%;
+}
+
+#preview-slide {
+    position: relative;
+}
+
+#scenes {
+    z-index: 1;
+}
+
+.font-arial {
+    font-family: 'Arial';
+}
+
+.font-georgia {
+    font-family: 'Georgia';
+}
+
+.font-great-vibes {
+    font-family: 'Great Vibes';
+    
+}
+
+.font-times-new-roman {
+    font-family: 'Times New Roman';
+}
+
+.font-tahoma {
+    font-family: 'Tahoma';
+}
+
+.font-verdana {
+    font-family: 'Verdana';
+}
+
+
+div#select-fonts { 
+  margin: 10px;
+  padding: 10px; 
+  border: 2px solid purple; 
+  width: 200px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+/*#select-fonts ul { display: none; }*/
+/*#select-fonts:hover > ul {display: block; background: #f9f9f9; border-top: 1px solid purple;}*/
+#select-fonts:hover > ul { background: #f9f9f9; border-top: 1px solid purple;}
+#select-fonts:hover > ul > li { margin-left: -20px; padding: 5px; border-bottom: 1px solid #4f4f4f; list-style: none}
+#select-fonts:hover > ul > li:hover { background: white;}
+#select-fonts:hover > ul > li:hover > a { color: red; }
+
+
+.visivel {
+    display: block !important;
+}
+
+.invisivel {
+    display: none;
+}
+
+#example-explosion, #example-fade, .frase-slide {
+
+    font-size: 50px;
+}
+
+/*.visivel {
+    visibility: visible !important;
+}*/
+</style>
+
+</head>
+
+<p aling="center">
+    <h1>Em breve novo site</h1>
+</p>
+
+<body>
+
+
+<div id="forms-slide">
+
+    <h2>Configuração Geral</h2>
+    <form enctype="multipart/form-data" method="post" action="upload.php" id="formUploadMusica">
+        Música: <input type="file" name="musica" id="musica" accept="audio/*">
+        <input type="hidden" name="caminho" value="./musicas/">
+        <span id="upload_musica" class="status-upload"></span>
+
+
+        <div id="select-fonts">
+          <a href="#">Selecione a fonte</a>
+          <ul>
+            <li class="font-arial"><a href="#">Arial</a></li>
+            <li class="font-georgia"><a href="#">Georgia</a></li>
+            <li class="font-great-vibes"><a href="#">Great Vibes</a></li>
+            <li class="font-tahoma"><a href="#">Tahoma</a></li>
+            <li class="font-times-new-roman"><a href="#">Times New Roman</a></li>
+            <li class="font-verdana"><a href="#">Verdana</a></li>
+          </ul>
+        </div>
+
+        <div>
+            Efeito do texto:<br>
+            <select id="efeito-texto">
+                <option value="">--Selecione--</option>
+                <option value="fade">Fade</option>
+                <option value="explosion">Explosion</option>                
+            </select>
+
+            <div id="example-explosion" class="explosion">
+                 <div>Primeira frase!!</div>
+                 <div>Segunda frase</div>
+                 <div>Terceira frase</div>
+            </div>
+
+            <!-- <div id="container-frase-slide"> -->
+                
+            <div class="frase-slide">
+                <span></span>
+            </div>
+            <!-- </div> -->
+
+        </div>        
+    </form>
+    <hr />
+
+
+    <form enctype="multipart/form-data" method="post" action="upload.php" ref="1" id="formUploadImage1">
+        Cena1:<br>
+        Foto / Imagem: <input type="file" name="foto" class="upload-image-scene" id="foto1" accept="image/*">
+        <input type="hidden" name="caminho" value="./files/">
+        <br> Texto / Frase: <input type="text" name="frase" id="frase1"> 
+        <input type="button" id="btnSaveTxt1" class="salvar-texto" value="Salvar texto">
+
+        <span class="preview-images preview-image-foto1">  
+        foto 1              
+        </span>
+        <span id="upload_foto1" class="status-upload"></span>
+    </form>    
+
+
+    <input type="button" name="btnSaveScene" class="save-scene" id="btnSaveScene1" value="Salvar Cena">
+
+    <hr />    
+
+    <input type="button" name="btnAdd" id="btnAdd" value="Adicionar mais cenas">    
+    
+</div>
+
+<input type="button" name="btnViewSlide" id="btnViewSlide" value="Ver Slide">
+<hr />
+
+
+
+
+<div id="preview-slide" style="max-width:900px;">
+    <audio id="bkg-musica" src="./musicas/Jack Johnson - You And Your Heart.mp3" type="audio/mp3"></audio>
+
+    <div id="container-frase-slide">
+        <!-- <p class="frase"></p> -->
+        <div class="frase-slide">            
+        </div>
+    </div>
+    <div id="scenes">
+        <!-- <img src="" class="scenes-images" width="900" height="506"> -->
+    </div>
+</div>
+
+
+
+
+<!-- <div id="example" class="explosion">
+ <div>First text</div>
+ <div>Second text</div>
+ <div>Third text</div>
+</div> -->
+
+
+<script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+
+<script src="textition.js"></script>
+
+<script src="gAjax.js"></script>
+
+<script src="gUploader.js"></script>
+
+<script src="slide.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+    var estiloFonte = '';
+
+    var arrImagensSlide = new Array();
+    var arrFrasesSlide = new Array();
+
+    console.log(arrImagensSlide);    
+    
+        
+    function showFade(){
+        console.log('show fade');
+
+        setInterval(function(){             
+            $(".frase-slide").fadeOut("slow", function() { 
+                $(".frase-slide").html("Primeira Frase").fadeIn({duration: 1800});
+            }); 
+        }, 3000);        
+    }    
+
+    $('.explosion').textition({
+         //speed: 1,
+         animation: 'ease-in',
+         map: {x: 200, y: 100, z: 0},
+         autoplay: true,
+        // interval: 1.5
+    });
+
+
+    $('#select-fonts > ul').addClass('invisivel');
+
+    $('#example-explosion, #example-fade').addClass('invisivel');
+
+
+    $('#select-fonts > a').click(function(){        
+        var classes = $(this).attr('class');
+        if(classes == 'open'){            
+
+            $('#select-fonts > ul').removeClass('visivel');
+            $('#select-fonts > ul').addClass('invisivel');            
+        }
+        else{            
+            $('#select-fonts > ul').removeClass('invisivel');
+            $('#select-fonts > ul').addClass('visivel');    
+        }
+        //$(this).addClass('open');
+        $(this).toggleClass( "open" );            
+    });
+
+    // seleciona a font family
+    $('#select-fonts > ul a').click(function(){                        
+
+        estiloFonte = $(this).parent().attr('class');                
+        $('#select-fonts > a').click();       
+
+    });
+
+    // escolher efeito de texto - fade ou explosion
+    $('#efeito-texto').change(function() {        
+        var efeitoTexto = $(this).val();
+        
+        $('span#previa-efeito-texto').html('Sua frase aqui');        
+        
+        $('#example-' + efeitoTexto).addClass('visivel');
+        $('#example-' + efeitoTexto).addClass(estiloFonte);
+
+        if(efeitoTexto == 'fade')
+            showFade();
+    });
+
+
+    // Adicionar mais cenas - formulário de cenas
+    $('#btnAdd').click(function(){        
+        // get ref attribute from form element just before button
+        var countForm = parseInt($(this).prev().attr('ref'));            
+        var formScene = createFormScene(countForm);        
+        $(this).before(formScene);
+    });
+
+    
+
+    // Salvar cena
+    $('.save-scene').click(function(){        
+        id = $(this).attr('id');
+        numId = id[id.length -1];
+        var img = $('.preview-image-foto'+numId + ' img').attr('src');
+        arrImagensSlide.push(img);
+
+        // Salva frase da cena    
+        var texto = $('#frase'+numId).val();        
+        arrFrasesSlide.push(texto);                   
+    });
+
+    // Ver prévia da cena criada
+    $('#btnViewSlide').click(function(){  
+        console.log(arrImagensSlide);
+        console.log(arrFrasesSlide);
+
+        $('#bkg-musica').get(0).play();
+        exibiSlide();
+        showFade();
+
+    });
+    
+    // Ao clicar na imagem adicionada exibi a imagem em tamanho grande na div principal
+    $(document).on("click",".preview-image",function() {        
+
+        var img = $(this).children(":first").attr('src');
+        $('.scenes-images').attr('src', img);
+    });
+
+
+    // Ao escolher uma imagem
+    $('.upload-image-scene').change(function (){
+        var idField = $(this).attr('id');
+        var idForm = $(this).parent('form').attr('id');    
+        var action = $(this).parent('form').attr('action');    
+        $.gUploader.exec(idField, idForm, action, 'image');
+    });  
+
+      // Enviar musica para o slide
+    $('#musica').change(function (){    
+
+        ret = checkTipoArquivo($(this), 'mp3');
+        if (!ret) {
+            alert('Permitido apenas arquivos de música do tipo MP3');
+            $(this).val('');
+            return false;
+        }            
+
+        $.gUploader.exec('musica', $('#formUploadMusica').attr('id'), $('#formUploadMusica').attr('action'));
+
+    });  
+
+
+    function checkTipoArquivo(input, tipo){
+        // get the file name, possibly with path (depends on browser)
+        //var filename = $("#file_input").val();
+        var filename = input.val();
+
+        // Use a regular expression to trim everything before final dot
+        var extension = filename.replace(/^.*\./, '');
+
+        // Iff there is no dot anywhere in filename, we would have extension == filename,
+        // so we account for this possibility now
+        if (extension == filename) {
+            extension = '';
+        } else {
+            // if there is an extension, we convert to lower case
+            // (N.B. this conversion will not effect the value of the extension
+            // on the file upload.)
+            extension = extension.toLowerCase();
+        }
+
+        return true;
+        /*
+        if(extension != tipo)
+            return false;            
+        else
+            return true;
+        */
+    }
+
+    // Template new form scene
+    function createFormScene(countForm){
+
+        var formScene = '';
+        countForm = countForm + 1;
+
+        formScene += '<form enctype="multipart/form-data" method="post" action="upload.php" ref="' + countForm + '" id="formUploadImage">';
+        formScene += 'Cena' + countForm + ':<br>';
+        formScene += 'Foto / Imagem: <input type="file" name="foto" class="upload-image-scene" id="foto' + countForm + '" accept="image/*">';
+        formScene += '<input type="hidden" name="caminho" value="./files/">';
+        formScene += '<br> Texto / Frase: <input type="text" name="frase" id="frase' + countForm + '"> ';
+        formScene += '<input type="button" id="btnSaveTxt' + countForm + '" class="salvar-texto" value="Salvar texto">';
+        formScene += '<span class="preview-images preview-image-foto' + countForm + '">';
+        formScene += 'foto ' + countForm;
+        formScene += '</span>';
+        formScene += '<span id="upload_foto' + countForm + '" class="status-upload"></span>';
+        formScene += '</form>'; 
+        formScene += '<input type="button" name="btnSaveScene" class="save-scene" id="btnSaveScene' + countForm + '" value="Salvar Cena">';
+        formScene += '<hr />';
+
+        return formScene;
+    }
+
+
+    function exibiSlide(){
+        var qtdImagens = arrImagensSlide.length;
+        var contadorBanners = 0;
+        var firsTime = true;
+        var divPreviewSlide = 'scenes';        
+
+        if(qtdImagens > 1){     
+                        
+            setInterval(function(){ 
+                if(firsTime) {
+                    contadorBanners = qtdImagens;
+                    firsTime = false;
+                }
+                else
+                    contadorBanners++;
+
+                //qtdImagens = imagens.length;
+
+                // if(contadorBanners > qtdImagens)
+                //     contadorBanners = 1;            
+                
+                nextBanner = arrImagensSlide[contadorBanners - 1];
+                urlSlide = '/banners/' + nextBanner;
+
+                $("#" + divPreviewSlide)
+                .fadeOut(400, function() {                
+                    $("#" + divPreviewSlide).css('background-image','url('+ nextBanner +')');
+                    $("#" + divPreviewSlide).css('background-repeat','no-repeat');
+                    $("#" + divPreviewSlide).css('background-size','contain');
+                    $("#" + divPreviewSlide).css('background-position','center');
+                    $("#" + divPreviewSlide).css('height','530px');
+                    $("#" + divPreviewSlide).css('width','900px');
+                    $("#" + divPreviewSlide).css('background-color','#fff');
+                    $("#" + divPreviewSlide).css('margin-bottom','-100px');
+                })
+                .fadeIn(400);
+            }, 10000);      
+        }
+        else if(arrImagensSlide.length == 1){        
+            urlSlide = arrImagensSlide[0];
+            $("#" + divPreviewSlide).css('background-image','url('+ urlSlide +')');
+            $("#" + divPreviewSlide).css('background-repeat','no-repeat');
+            $("#" + divPreviewSlide).css('background-size','contain');
+            $("#" + divPreviewSlide).css('background-position','center');
+            $("#" + divPreviewSlide).css('height','530px');
+            $("#" + divPreviewSlide).css('width','900px');
+            $("#" + divPreviewSlide).css('background-color','#fff');
+            $("#" + divPreviewSlide).css('margin-bottom','-100px');
+
+            $('#container-frase-slide .frase-slide').html(arrFrasesSlide[0]);
+        }
+    }    
+
+});
+
+
+  </script>
+
+</body>
+</html>
