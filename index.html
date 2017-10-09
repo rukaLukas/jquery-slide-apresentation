@@ -171,7 +171,7 @@ div#select-fonts {
     <hr />
 
 
-    <form enctype="multipart/form-data" method="post" action="upload.php" ref="1" id="formUploadImage1">
+    <form enctype="multipart/form-data" method="post" action="upload.php" class="form-scenes" ref="1" id="formUploadImage1">
         Cena1:<br>
         Foto / Imagem: <input type="file" name="foto" class="upload-image-scene" id="foto1" accept="image/*">
         <input type="hidden" name="caminho" value="./files/">
@@ -200,7 +200,7 @@ div#select-fonts {
 
 
 <div id="preview-slide" style="max-width:900px;">
-    <audio id="bkg-musica" src="./musicas/Jack Johnson - You And Your Heart.mp3" type="audio/mp3"></audio>
+    <audio id="bkg-musica" src="" type="audio/mp3"></audio>
 
     <div id="container-frase-slide">
         <!-- <p class="frase"></p> -->
@@ -243,18 +243,27 @@ $(document).ready(function(){
 
     var arrImagensSlide = new Array();
     var arrFrasesSlide = new Array();
-
-    console.log(arrImagensSlide);    
+    var bkgSound;    
     
         
-    function showFade(){
-        console.log('show fade');
+    function showFade(msg, flag){
+        //console.log('show fade');
 
-        setInterval(function(){             
+        /*setInterval(function(){             
             $(".frase-slide").fadeOut("slow", function() { 
                 $(".frase-slide").html("Primeira Frase").fadeIn({duration: 1800});
             }); 
-        }, 3000);        
+        }, 3000);        */
+
+        
+         $(".frase-slide").fadeOut("fast");
+         $(".frase-slide").html(msg).fadeIn({duration: 1800});
+
+        /*setTimeout(function(){             
+            $(".frase-slide").fadeOut("slow", function() { 
+                $(".frase-slide").html(msg).fadeIn({duration: 1800});
+            }); 
+        }, 1500);        */
     }    
 
     $('.explosion').textition({
@@ -310,16 +319,15 @@ $(document).ready(function(){
 
     // Adicionar mais cenas - formulário de cenas
     $('#btnAdd').click(function(){        
-        // get ref attribute from form element just before button
-        var countForm = parseInt($(this).prev().attr('ref'));            
+        // get ref attribute from form element just before button        
+        var countForm = parseInt($('.form-scenes:last-of-type').attr('ref'));            
         var formScene = createFormScene(countForm);        
         $(this).before(formScene);
     });
 
     
-
     // Salvar cena
-    $('.save-scene').click(function(){        
+    $(document).on("click",".save-scene", function(){        
         id = $(this).attr('id');
         numId = id[id.length -1];
         var img = $('.preview-image-foto'+numId + ' img').attr('src');
@@ -327,18 +335,23 @@ $(document).ready(function(){
 
         // Salva frase da cena    
         var texto = $('#frase'+numId).val();        
-        arrFrasesSlide.push(texto);                   
+        arrFrasesSlide.push(texto);   
+
+        console.log(arrImagensSlide);                
+        console.log(arrFrasesSlide);                
     });
 
     // Ver prévia da cena criada
-    $('#btnViewSlide').click(function(){  
-        console.log(arrImagensSlide);
-        console.log(arrFrasesSlide);
+    $('#btnViewSlide').click(function(){
 
+        $('#bkg-musica').attr('src', './musicas/' + bkgSound);
         $('#bkg-musica').get(0).play();
-        exibiSlide();
-        showFade();
 
+        $('html, body').animate({
+            scrollTop: $("#preview-slide").offset().top
+        }, 1000);
+        
+        exibiSlide();        
     });
     
     // Ao clicar na imagem adicionada exibi a imagem em tamanho grande na div principal
@@ -350,7 +363,7 @@ $(document).ready(function(){
 
 
     // Ao escolher uma imagem
-    $('.upload-image-scene').change(function (){
+    $(document).on("change", ".upload-image-scene", function (){
         var idField = $(this).attr('id');
         var idForm = $(this).parent('form').attr('id');    
         var action = $(this).parent('form').attr('action');    
@@ -369,6 +382,8 @@ $(document).ready(function(){
 
         $.gUploader.exec('musica', $('#formUploadMusica').attr('id'), $('#formUploadMusica').attr('action'));
 
+        tmpFile = $(this).val().split("\\");
+        bkgSound = tmpFile[tmpFile.length-1];        
     });  
 
 
@@ -406,8 +421,8 @@ $(document).ready(function(){
         var formScene = '';
         countForm = countForm + 1;
 
-        formScene += '<form enctype="multipart/form-data" method="post" action="upload.php" ref="' + countForm + '" id="formUploadImage">';
-        formScene += 'Cena' + countForm + ':<br>';
+        formScene += '<form enctype="multipart/form-data" method="post" action="upload.php" ref="' + countForm + '" id="formUploadImage' + countForm + '" class="form-scenes">';
+        formScene += 'Cena' + countForm + ':<br>';        
         formScene += 'Foto / Imagem: <input type="file" name="foto" class="upload-image-scene" id="foto' + countForm + '" accept="image/*">';
         formScene += '<input type="hidden" name="caminho" value="./files/">';
         formScene += '<br> Texto / Frase: <input type="text" name="frase" id="frase' + countForm + '"> ';
@@ -432,9 +447,25 @@ $(document).ready(function(){
 
         if(qtdImagens > 1){     
                         
+            $("#" + divPreviewSlide)
+            .fadeOut(400, function() {                
+                $("#" + divPreviewSlide).css('background-image','url('+ arrImagensSlide[0] +')');
+                $("#" + divPreviewSlide).css('background-repeat','no-repeat');
+                $("#" + divPreviewSlide).css('background-size','contain');
+                $("#" + divPreviewSlide).css('background-position','center');
+                $("#" + divPreviewSlide).css('height','530px');
+                $("#" + divPreviewSlide).css('width','900px');
+                $("#" + divPreviewSlide).css('background-color','#fff');
+                $("#" + divPreviewSlide).css('margin-bottom','-100px');
+            })
+            .fadeIn(400);
+            showFade(arrFrasesSlide[0]);
+
+
+
             setInterval(function(){ 
                 if(firsTime) {
-                    contadorBanners = qtdImagens;
+                    contadorBanners = 2;
                     firsTime = false;
                 }
                 else
@@ -442,11 +473,10 @@ $(document).ready(function(){
 
                 //qtdImagens = imagens.length;
 
-                // if(contadorBanners > qtdImagens)
-                //     contadorBanners = 1;            
+                if(contadorBanners > qtdImagens)
+                    contadorBanners = 1;            
                 
-                nextBanner = arrImagensSlide[contadorBanners - 1];
-                urlSlide = '/banners/' + nextBanner;
+                nextBanner = arrImagensSlide[contadorBanners - 1];                
 
                 $("#" + divPreviewSlide)
                 .fadeOut(400, function() {                
@@ -460,6 +490,8 @@ $(document).ready(function(){
                     $("#" + divPreviewSlide).css('margin-bottom','-100px');
                 })
                 .fadeIn(400);
+
+                showFade(arrFrasesSlide[contadorBanners - 1]);
             }, 10000);      
         }
         else if(arrImagensSlide.length == 1){        
@@ -474,7 +506,11 @@ $(document).ready(function(){
             $("#" + divPreviewSlide).css('margin-bottom','-100px');
 
             $('#container-frase-slide .frase-slide').html(arrFrasesSlide[0]);
+
+            showFade(arrFrasesSlide[0]);
         }
+
+        
     }    
 
 });
