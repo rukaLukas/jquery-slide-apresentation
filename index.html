@@ -110,6 +110,10 @@ div#select-fonts {
     font-size: 50px;
 }
 
+#container-frase-slide .frase-slide {
+    color: #fff;
+    text-shadow: 3px 3px #000 !important;    
+}
 /*.visivel {
     visibility: visible !important;
 }*/
@@ -153,11 +157,11 @@ div#select-fonts {
                 <option value="explosion">Explosion</option>                
             </select>
 
-            <div id="example-explosion" class="explosion">
+            <!-- <div id="example-explosion" class="explosion">
                  <div>Primeira frase!!</div>
                  <div>Segunda frase</div>
                  <div>Terceira frase</div>
-            </div>
+            </div> -->
 
             <!-- <div id="container-frase-slide"> -->
                 
@@ -205,6 +209,11 @@ div#select-fonts {
     <div id="container-frase-slide">
         <!-- <p class="frase"></p> -->
         <div class="frase-slide">            
+            
+            <!--  <div>First text</div>
+             <div>Second text</div>
+             <div>Third text</div>             -->
+
         </div>
     </div>
     <div id="scenes">
@@ -215,7 +224,7 @@ div#select-fonts {
 
 
 
-<!-- <div id="example" class="explosion">
+<!-- <div class="explosion">
  <div>First text</div>
  <div>Second text</div>
  <div>Third text</div>
@@ -240,7 +249,7 @@ div#select-fonts {
 $(document).ready(function(){
 
     var estiloFonte = '';
-
+    var efeitoTexto = '';
     var arrImagensSlide = new Array();
     var arrFrasesSlide = new Array();
     var bkgSound;    
@@ -266,13 +275,13 @@ $(document).ready(function(){
         }, 1500);        */
     }    
 
-    $('.explosion').textition({
-         //speed: 1,
-         animation: 'ease-in',
+    /*$('.explosion').textition({
+         speed: 1.5,
+         animation: 'ease-in-out',
          map: {x: 200, y: 100, z: 0},
          autoplay: true,
-        // interval: 1.5
-    });
+         interval: 10.5,
+    });*/
 
 
     $('#select-fonts > ul').addClass('invisivel');
@@ -305,7 +314,7 @@ $(document).ready(function(){
 
     // escolher efeito de texto - fade ou explosion
     $('#efeito-texto').change(function() {        
-        var efeitoTexto = $(this).val();
+        efeitoTexto = $(this).val();
         
         $('span#previa-efeito-texto').html('Sua frase aqui');        
         
@@ -331,21 +340,22 @@ $(document).ready(function(){
         id = $(this).attr('id');
         numId = id[id.length -1];
         var img = $('.preview-image-foto'+numId + ' img').attr('src');
-        arrImagensSlide.push(img);
+        arrImagensSlide[numId] = img;
 
         // Salva frase da cena    
         var texto = $('#frase'+numId).val();        
-        arrFrasesSlide.push(texto);   
+        arrFrasesSlide[numId] = texto;  
 
-        console.log(arrImagensSlide);                
-        console.log(arrFrasesSlide);                
+        $(this).after('<span>Cena salva com sucesso.</span>');         
     });
 
     // Ver prévia da cena criada
     $('#btnViewSlide').click(function(){
 
-        $('#bkg-musica').attr('src', './musicas/' + bkgSound);
-        $('#bkg-musica').get(0).play();
+        if(bkgSound !== undefined && bkgSound !== ""){
+            $('#bkg-musica').attr('src', './musicas/' + bkgSound);
+            $('#bkg-musica').get(0).play();    
+        }        
 
         $('html, body').animate({
             scrollTop: $("#preview-slide").offset().top
@@ -437,29 +447,48 @@ $(document).ready(function(){
 
         return formScene;
     }
-
+    
 
     function exibiSlide(){
-        var qtdImagens = arrImagensSlide.length;
+        var qtdImagens = arrImagensSlide.length - 1;
         var contadorBanners = 0;
         var firsTime = true;
-        var divPreviewSlide = 'scenes';        
+        var divPreviewSlide = 'scenes';  
+        var flagEfeito = false;
+
+        // set style fonts
+        $('#container-frase-slide .frase-slide').addClass(estiloFonte);
+
+        if(efeitoTexto === 'explosion'){
+            $('#container-frase-slide .frase-slide').append('<div>Firsted text</div>');    
+            $('#container-frase-slide .frase-slide').append('<div>Second text</div>');    
+            $('#container-frase-slide .frase-slide').append('<div>Third text</div>'); 
+
+            $('#container-frase-slide .frase-slide').addClass(efeitoTexto);
+
+            $('.explosion').textition({
+                 speed: 1.5,
+                 //animation: 'ease-in-out',
+                 //map: {x: 200, y: 100, z: 0},
+                 autoplay: true,
+                 interval: 10,
+            });   
+
+            flagEfeito = true;
+        }
+        
+
 
         if(qtdImagens > 1){     
-                        
+                                    
             $("#" + divPreviewSlide)
-            .fadeOut(400, function() {                
-                $("#" + divPreviewSlide).css('background-image','url('+ arrImagensSlide[0] +')');
-                $("#" + divPreviewSlide).css('background-repeat','no-repeat');
-                $("#" + divPreviewSlide).css('background-size','contain');
-                $("#" + divPreviewSlide).css('background-position','center');
-                $("#" + divPreviewSlide).css('height','530px');
-                $("#" + divPreviewSlide).css('width','900px');
-                $("#" + divPreviewSlide).css('background-color','#fff');
-                $("#" + divPreviewSlide).css('margin-bottom','-100px');
-            })
+            .fadeOut(400, 
+                showImageOnSlide(divPreviewSlide, arrImagensSlide[1])
+                )
             .fadeIn(400);
-            showFade(arrFrasesSlide[0]);
+
+            // show phrase
+            if(!flagEfeito) showFade(arrFrasesSlide[1]);
 
 
 
@@ -476,42 +505,42 @@ $(document).ready(function(){
                 if(contadorBanners > qtdImagens)
                     contadorBanners = 1;            
                 
-                nextBanner = arrImagensSlide[contadorBanners - 1];                
+                nextBanner = arrImagensSlide[contadorBanners];                                
 
                 $("#" + divPreviewSlide)
-                .fadeOut(400, function() {                
-                    $("#" + divPreviewSlide).css('background-image','url('+ nextBanner +')');
-                    $("#" + divPreviewSlide).css('background-repeat','no-repeat');
-                    $("#" + divPreviewSlide).css('background-size','contain');
-                    $("#" + divPreviewSlide).css('background-position','center');
-                    $("#" + divPreviewSlide).css('height','530px');
-                    $("#" + divPreviewSlide).css('width','900px');
-                    $("#" + divPreviewSlide).css('background-color','#fff');
-                    $("#" + divPreviewSlide).css('margin-bottom','-100px');
-                })
+                .fadeOut(400, 
+                    showImageOnSlide(divPreviewSlide, nextBanner)
+                    )
                 .fadeIn(400);
 
-                showFade(arrFrasesSlide[contadorBanners - 1]);
+                if(!flagEfeito) showFade(arrFrasesSlide[contadorBanners]);
+
             }, 10000);      
         }
         else if(arrImagensSlide.length == 1){        
-            urlSlide = arrImagensSlide[0];
-            $("#" + divPreviewSlide).css('background-image','url('+ urlSlide +')');
-            $("#" + divPreviewSlide).css('background-repeat','no-repeat');
-            $("#" + divPreviewSlide).css('background-size','contain');
-            $("#" + divPreviewSlide).css('background-position','center');
-            $("#" + divPreviewSlide).css('height','530px');
-            $("#" + divPreviewSlide).css('width','900px');
-            $("#" + divPreviewSlide).css('background-color','#fff');
-            $("#" + divPreviewSlide).css('margin-bottom','-100px');
+            urlSlide = arrImagensSlide[1];
 
-            $('#container-frase-slide .frase-slide').html(arrFrasesSlide[0]);
-
-            showFade(arrFrasesSlide[0]);
-        }
-
-        
+            showImageOnSlide(divPreviewSlide, urlSlide);
+            // show phrase            
+            $('#container-frase-slide .frase-slide').html(arrFrasesSlide[1]);
+            
+            if(!flagEfeito) showFade(arrFrasesSlide[1]);
+        }        
     }    
+
+
+    function showImageOnSlide(div, img){
+
+        $("#" + div).css('background-image','url('+ img +')');
+        $("#" + div).css('background-repeat','no-repeat');
+        $("#" + div).css('background-size','contain');
+        $("#" + div).css('background-position','center');
+        $("#" + div).css('height','530px');
+        $("#" + div).css('width','900px');
+        $("#" + div).css('background-color','#fff');
+        $("#" + div).css('margin-bottom','-100px');
+
+    }
 
 });
 
